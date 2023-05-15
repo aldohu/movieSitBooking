@@ -42,3 +42,6 @@ updateCountAndTotal();
 movie.addEventListener('change', (e) => {
 	totalPrice.innerText = +count.innerText * +movie.value;
 });
+const na = document.getElementById('N/A');
+
+na.removeEventListener('click', handleClick);
