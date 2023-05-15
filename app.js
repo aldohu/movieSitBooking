@@ -5,24 +5,40 @@ let count = document.getElementById('count');
 let totalPrice = document.getElementById('total');
 const seats = document.querySelectorAll('.seat:not(.occupied):not(.selected)');
 
+const selectedSeats = JSON.parse(localStorage.getItem('selectedSeats')) || [];
+
+function updateCountAndTotal() {
+	const selectedSeatsCount = selectedSeats.length;
+	count.innerText = selectedSeatsCount;
+	totalPrice.innerText = selectedSeatsCount * +movie.value;
+}
+function saveSelectedSeats() {
+	localStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
+}
+
 function handleClick() {
+	const seatIndex = Array.from(seats).indexOf(this);
+
 	if (!this.classList.contains('selected')) {
 		this.classList.add('selected');
-		count.innerText = +count.innerText + 1;
-		// Additional actions or logic here
-		totalPrice.innerText = +totalPrice.innerText + +movie.value;
-		console.log(movie.value);
-		console.log(totalPrice);
+		selectedSeats.push(seatIndex);
 	} else {
 		this.classList.remove('selected');
-		count.innerText = +count.innerText - 1;
-		totalPrice.innerText = +totalPrice.innerText - +movie.value;
+		selectedSeats.splice(selectedSeats.indexOf(seatIndex), 1);
 	}
+
+	saveSelectedSeats();
+	updateCountAndTotal();
 }
 
 seats.forEach((seat) => {
 	seat.addEventListener('click', handleClick);
 });
+
+selectedSeats.forEach((seatIndex) => {
+	seats[seatIndex].classList.add('selected');
+});
+updateCountAndTotal();
 movie.addEventListener('change', (e) => {
 	totalPrice.innerText = +count.innerText * +movie.value;
 });
